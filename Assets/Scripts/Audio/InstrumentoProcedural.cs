@@ -80,4 +80,4 @@ public class InstrumentoProcedural : MonoBehaviour
             if (faseVibrato > 2.0 * System.Math.PI) faseVibrato -= 2.0 * System.Math.PI;
         }
     }
-}2
+}
