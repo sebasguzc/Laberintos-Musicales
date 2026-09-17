@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ESCENAS/Nivel.unity
     guid: b4ba3172f6c3c1e4fa7b3cb14cbe06c2
+  - enabled: 1
+    path: Assets/ESCENAS/Nivel1.unity
+    guid: 263147dce10c7b8478693a0a6ef7a9ed
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f,
       type: 2}
