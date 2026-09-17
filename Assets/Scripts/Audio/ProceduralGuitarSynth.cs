@@ -11,7 +11,6 @@ public class ProceduralGuitarSynth : MonoBehaviour
     [SerializeField] private int sampleRate = 44100;
     [SerializeField] private float masterVolume = 0.8f;
 
-    [Header("Note Settings")]
     public enum GuitarNote
     {
         Do,
@@ -21,6 +20,9 @@ public class ProceduralGuitarSynth : MonoBehaviour
         Sol,
         Custom
     }
+
+    [Header("Note Settings")]
+    [SerializeField] private GuitarNote currentNote = GuitarNote.Do;
 
     [Header("ADSR Envelope")]
     [SerializeField] private float attack = 0.005f;

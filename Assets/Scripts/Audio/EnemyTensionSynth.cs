@@ -29,13 +29,14 @@ public class EnemyTensionSynth : MonoBehaviour
     [SerializeField] private float filterMaxCutoff = 900.0f;
     [SerializeField] [Range(0f, 1f)] private float tremoloDepth = 0.3f;
 
-    [Header("LFO Mode")]
     public enum LFOMode
     {
         Filter,
         Tremolo,
         Both
     }
+
+    [Header("LFO Mode")]
     [SerializeField] private LFOMode lfoMode = LFOMode.Filter;
 
     [Header("Wavetable Settings")]
