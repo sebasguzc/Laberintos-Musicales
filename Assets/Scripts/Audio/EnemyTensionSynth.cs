@@ -12,7 +12,7 @@ public class EnemyTensionSynth : MonoBehaviour
     [SerializeField] private float masterVolume = 0.8f;
 
     [Header("Synthesis Parameters")]
-    [SerializeField] private float baseFrequency = 72.0f;
+    // [SerializeField] private float baseFrequency = 72.0f; // Reservado para uso futuro
     [SerializeField] private float duration = 8.0f;
     [SerializeField] private int tableSize = 1024;
     [SerializeField] private int wavetableSeed = 42;
@@ -27,7 +27,7 @@ public class EnemyTensionSynth : MonoBehaviour
     [SerializeField] private float lfoRateHz = 1.0f;
     [SerializeField] private float filterMinCutoff = 250.0f;
     [SerializeField] private float filterMaxCutoff = 900.0f;
-    [SerializeField] [Range(0f, 1f)] private float tremoloDepth = 0.3f;
+    // [SerializeField] [Range(0f, 1f)] private float tremoloDepth = 0.3f; // Reservado para uso futuro
 
     public enum LFOMode
     {
@@ -89,31 +89,32 @@ public class EnemyTensionSynth : MonoBehaviour
         LFOMode customLFOMode = LFOMode.Filter,
         float customTremoloDepth = 0.3f)
     {
-        return GenerateEnemyTensionInternal(
-            customDuration,
-            customFrequency,
-            customLFOMode,
-            customTremoloDepth
-        );
+        _customDuration = customDuration;
+        _customFrequency = customFrequency;
+        _customLFOMode = customLFOMode;
+        _customTremoloDepth = customTremoloDepth;
+        
+        return GenerateEnemyTensionInternal();
     }
 
-    private AudioClip GenerateEnemyTensionInternal(
-        float duration,
-        float frequency,
-        LFOMode mode,
-        float tremoloDepth)
+    private float _customDuration = 8.0f;
+    private float _customFrequency = 72.0f;
+    private LFOMode _customLFOMode = LFOMode.Filter;
+    private float _customTremoloDepth = 0.3f;
+
+    private AudioClip GenerateEnemyTensionInternal()
     {
-        int totalFrames = Mathf.CeilToInt(duration * sampleRate);
+        int totalFrames = Mathf.CeilToInt(_customDuration * sampleRate);
         float[] samples = new float[totalFrames];
 
         float phase = 0f;
-        float increment = frequency * tableSize / sampleRate;
+        float increment = _customFrequency * tableSize / sampleRate;
 
         // Reset filter state
         lowPassFilter.Reset();
 
-        bool useFilter = mode == LFOMode.Filter || mode == LFOMode.Both;
-        bool useTremolo = mode == LFOMode.Tremolo || mode == LFOMode.Both;
+        bool useFilter = _customLFOMode == LFOMode.Filter || _customLFOMode == LFOMode.Both;
+        bool useTremolo = _customLFOMode == LFOMode.Tremolo || _customLFOMode == LFOMode.Both;
 
         for (int i = 0; i < totalFrames; i++)
         {
@@ -124,13 +125,13 @@ public class EnemyTensionSynth : MonoBehaviour
                 phase -= tableSize;
 
             float raw = enemyWavetable[Mathf.FloorToInt(phase)];
-            float env = CalculateADSREnvelope(t, duration);
+            float env = CalculateADSREnvelope(t, _customDuration);
 
             float stage = useFilter ? lowPassFilter.ProcessSample(raw, t) : raw;
 
             if (useTremolo)
             {
-                float tremolo = (1f - tremoloDepth) + tremoloDepth * Mathf.Sin(2f * Mathf.PI * lfoRateHz * t);
+                float tremolo = (1f - _customTremoloDepth) + _customTremoloDepth * Mathf.Sin(2f * Mathf.PI * lfoRateHz * t);
                 stage *= tremolo;
             }
 
@@ -152,8 +153,8 @@ public class EnemyTensionSynth : MonoBehaviour
         // Decay
         if (t < attack + decay)
         {
-            float local = (t - attack) / Mathf.Max(decay, 0.0001f);
-            return 1f + (sustain - 1f) * local;
+            float decayProgress = (t - attack) / Mathf.Max(decay, 0.0001f);
+            return 1f + (sustain - 1f) * decayProgress;
         }
 
         // Sustain
@@ -162,8 +163,8 @@ public class EnemyTensionSynth : MonoBehaviour
             return sustain;
 
         // Release
-        float local = Mathf.Clamp((t - releaseStart) / Mathf.Max(release, 0.0001f), 0f, 1f);
-        return sustain + (0f - sustain) * local;
+        float releaseProgress = Mathf.Clamp((t - releaseStart) / Mathf.Max(release, 0.0001f), 0f, 1f);
+        return sustain + (0f - sustain) * releaseProgress;
     }
 
     private void NormalizeAudio(float[] samples)

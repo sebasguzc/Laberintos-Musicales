@@ -241,16 +241,16 @@ public class ProximityGemSynth : MonoBehaviour
             return t / Mathf.Max(attack, 0.0001f);
         if (t < attack + decay)
         {
-            float local = (t - attack) / Mathf.Max(decay, 0.0001f);
-            return 1f + (sustain - 1f) * local;
+            float decayProgress = (t - attack) / Mathf.Max(decay, 0.0001f);
+            return 1f + (sustain - 1f) * decayProgress;
         }
 
         float releaseStart = duration - release;
         if (t < releaseStart)
             return sustain;
 
-        float local = Mathf.Clamp((t - releaseStart) / Mathf.Max(release, 0.0001f), 0f, 1f);
-        return sustain + (0f - sustain) * local;
+        float releaseProgress = Mathf.Clamp((t - releaseStart) / Mathf.Max(release, 0.0001f), 0f, 1f);
+        return sustain + (0f - sustain) * releaseProgress;
     }
 
     private void NormalizeAudio(float[] samples)

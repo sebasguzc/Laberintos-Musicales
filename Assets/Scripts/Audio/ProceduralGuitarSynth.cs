@@ -22,7 +22,7 @@ public class ProceduralGuitarSynth : MonoBehaviour
     }
 
     [Header("Note Settings")]
-    [SerializeField] private GuitarNote currentNote = GuitarNote.Do;
+    // [SerializeField] private GuitarNote currentNote = GuitarNote.Do; // Reservado para uso futuro
 
     [Header("ADSR Envelope")]
     [SerializeField] private float attack = 0.005f;

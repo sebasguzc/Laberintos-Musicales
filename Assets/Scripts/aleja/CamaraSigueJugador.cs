@@ -4,25 +4,25 @@ namespace Juego2.Scripts
 {
     public class CamaraSigueJugador : MonoBehaviour
     {
-        [Header("Configuración de Seguimiento")]
+        [Header("Configuraciï¿½n de Seguimiento")]
         public float velocidadSuavizado = 5f;
-        public Vector3 desfase = new Vector3(0f, 0f, -10f); // Mantiene la cámara por delante en el eje Z
+        public Vector3 desfase = new Vector3(0f, 0f, -10f); // Mantiene la cï¿½mara por delante en el eje Z
 
         private Transform objetivoJugador;
 
         void LateUpdate()
         {
-            // Si la cámara aún no ha encontrado al jugador, lo busca en la escena
+            // Si la cï¿½mara aï¿½n no ha encontrado al jugador, lo busca en la escena
             if (objetivoJugador == null)
             {
                 BuscarJugador();
                 return;
             }
 
-            // Posición a la que debe moverse la cámara
+            // Posiciï¿½n a la que debe moverse la cï¿½mara
             Vector3 posicionDeseada = objetivoJugador.position + desfase;
 
-            // Transición suave entre la posición actual de la cámara y la del jugador
+            // Transiciï¿½n suave entre la posiciï¿½n actual de la cï¿½mara y la del jugador
             Vector3 posicionSuave = Vector3.Lerp(transform.position, posicionDeseada, velocidadSuavizado * Time.deltaTime);
 
             transform.position = posicionSuave;
@@ -31,7 +31,7 @@ namespace Juego2.Scripts
         private void BuscarJugador()
         {
             // Busca en la escena cualquier objeto que tenga el script de movimiento
-            JugadorMovimiento2D jugador = FindObjectOfType<JugadorMovimiento2D>();
+            JugadorMovimiento2D jugador = FindAnyObjectByType<JugadorMovimiento2D>();
 
             if (jugador != null)
             {
