@@ -65,6 +65,25 @@ public class PianoSynthesizer : MonoBehaviour
         Sol
     }
 
+    void Start()
+    {
+        Debug.Log("PianoSynthesizer inicializado correctamente");
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("PianoSynthesizer: No hay AudioSource en este GameObject. Añade un componente AudioSource.");
+                return;
+            }
+            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
+        }
+
+        if (audioSource != null)
+            Debug.Log("AudioSource conectado correctamente");
+    }
+
 
     // =========================================================
     // FRECUENCIAS
@@ -185,13 +204,6 @@ public class PianoSynthesizer : MonoBehaviour
 
 
             // -------------------------------------------------
-            // VOLUMEN
-            // -------------------------------------------------
-
-            sample *= masterVolume;
-
-
-            // -------------------------------------------------
             // GUARDAR MUESTRA
             // -------------------------------------------------
 
@@ -212,7 +224,7 @@ public class PianoSynthesizer : MonoBehaviour
                 false
             );
 
-
+        // Volcado obligatorio de los datos para que suene
         clip.SetData(samples, 0);
 
         return clip;
@@ -309,29 +321,10 @@ public class PianoSynthesizer : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            PlayNote(Note.Do);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            PlayNote(Note.Re);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            PlayNote(Note.Mi);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            PlayNote(Note.Fa);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            PlayNote(Note.Sol);
-        }
+        if (Input.GetKeyDown(KeyCode.Q)) PlayNote(Note.Do);
+        if (Input.GetKeyDown(KeyCode.W)) PlayNote(Note.Re);
+        if (Input.GetKeyDown(KeyCode.E)) PlayNote(Note.Mi);
+        if (Input.GetKeyDown(KeyCode.R)) PlayNote(Note.Fa);
+        if (Input.GetKeyDown(KeyCode.T)) PlayNote(Note.Sol);
     }
 }

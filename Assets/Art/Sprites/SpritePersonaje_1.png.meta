@@ -1,0 +1,463 @@
+fileFormatVersion: 2
+guid: 0d6cf5c4f5b33fc44875da6066609e71
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -9062891933288094627
+    second: SpritePersonaje_1_0
+  - first:
+      213: -5106590751944480406
+    second: SpritePersonaje_1_1
+  - first:
+      213: 7581071690962494413
+    second: SpritePersonaje_1_2
+  - first:
+      213: -1866645682501672368
+    second: SpritePersonaje_1_3
+  - first:
+      213: 2107272318973339377
+    second: SpritePersonaje_1_4
+  - first:
+      213: 6039811761776948493
+    second: SpritePersonaje_1_5
+  - first:
+      213: -8571335818085142090
+    second: SpritePersonaje_1_6
+  - first:
+      213: -4494980174090133288
+    second: SpritePersonaje_1_7
+  - first:
+      213: -3465434567430101665
+    second: SpritePersonaje_1_8
+  - first:
+      213: -1307041680108863110
+    second: SpritePersonaje_1_9
+  - first:
+      213: -7298663316514905328
+    second: SpritePersonaje_1_10
+  - first:
+      213: 3002929653323306330
+    second: SpritePersonaje_1_11
+  - first:
+      213: -4700607185223738475
+    second: SpritePersonaje_1_12
+  - first:
+      213: -5856331905823634400
+    second: SpritePersonaje_1_13
+  - first:
+      213: -2013215536682029276
+    second: SpritePersonaje_1_14
+  - first:
+      213: -8573122725879115341
+    second: SpritePersonaje_1_15
+  - first:
+      213: -1784537368504845837
+    second: SpritePersonaje_1_16
+  - first:
+      213: -7979308207696716036
+    second: SpritePersonaje_1_17
+  - first:
+      213: 799586181056105003
+    second: SpritePersonaje_1_18
+  - first:
+      213: 8086114908829171196
+    second: SpritePersonaje_1_19
+  - first:
+      213: -1445323595001482199
+    second: SpritePersonaje_1_20
+  - first:
+      213: -4282243193370449935
+    second: SpritePersonaje_1_21
+  - first:
+      213: 8390594059663046505
+    second: SpritePersonaje_1_22
+  - first:
+      213: 7686249121441870240
+    second: SpritePersonaje_1_23
+  - first:
+      213: 3393529475818211848
+    second: SpritePersonaje_1_24
+  - first:
+      213: 6417224273487737021
+    second: SpritePersonaje_1_25
+  - first:
+      213: 3745435557838723137
+    second: SpritePersonaje_1_26
+  - first:
+      213: 4990716858111452716
+    second: SpritePersonaje_1_27
+  - first:
+      213: 8800945501989409769
+    second: SpritePersonaje_1_28
+  - first:
+      213: 5340992722209578469
+    second: SpritePersonaje_1_29
+  - first:
+      213: 207881175638032369
+    second: SpritePersonaje_1_30
+  - first:
+      213: -2115236330979359517
+    second: SpritePersonaje_1_31
+  - first:
+      213: 2372047187891732704
+    second: SpritePersonaje_1_32
+  - first:
+      213: -6188695884279882353
+    second: SpritePersonaje_1_33
+  - first:
+      213: -4060482830792044172
+    second: SpritePersonaje_1_34
+  - first:
+      213: 1206311037336944101
+    second: SpritePersonaje_1_35
+  - first:
+      213: 22517208514235659
+    second: SpritePersonaje_1_36
+  - first:
+      213: -3483782313594156390
+    second: SpritePersonaje_1_37
+  - first:
+      213: 4490433865477628517
+    second: SpritePersonaje_1_38
+  - first:
+      213: -6831679986031135938
+    second: SpritePersonaje_1_39
+  - first:
+      213: 1333199833418377471
+    second: SpritePersonaje_1_40
+  - first:
+      213: -4401463546814249818
+    second: SpritePersonaje_1_41
+  - first:
+      213: 2111169813254550231
+    second: SpritePersonaje_1_42
+  - first:
+      213: -6373130474233581244
+    second: SpritePersonaje_1_43
+  - first:
+      213: -3479440375872898280
+    second: SpritePersonaje_1_44
+  - first:
+      213: 9035781976049630659
+    second: SpritePersonaje_1_45
+  - first:
+      213: 1444094408634305125
+    second: SpritePersonaje_1_46
+  - first:
+      213: 1382957378194392006
+    second: SpritePersonaje_1_47
+  - first:
+      213: 5255054827014201939
+    second: SpritePersonaje_1_48
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpritePersonaje_1_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 1027
+        width: 83
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d542c9ecdc32a3280800000000000000
+      internalID: -9062891933288094627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritePersonaje_1_1
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 1027
+        width: 83
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a69ed0954ceb129b0800000000000000
+      internalID: -5106590751944480406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritePersonaje_1_2
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 1028
+        width: 83
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc3e6946980653960800000000000000
+      internalID: 7581071690962494413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritePersonaje_1_3
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 1028
+        width: 83
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 052a8f444a75816e0800000000000000
+      internalID: -1866645682501672368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpritePersonaje_1_4
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 1027
+        width: 83
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65645ace24d1e9046ab113b3e42f1785
+      internalID: 2107272318973339377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 00883ccd003ca974dbc3eb8446c976db
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SpritePersonaje_1_0: -9062891933288094627
+      SpritePersonaje_1_1: -5106590751944480406
+      SpritePersonaje_1_10: -7298663316514905328
+      SpritePersonaje_1_11: 3002929653323306330
+      SpritePersonaje_1_12: -4700607185223738475
+      SpritePersonaje_1_13: -5856331905823634400
+      SpritePersonaje_1_14: -2013215536682029276
+      SpritePersonaje_1_15: -8573122725879115341
+      SpritePersonaje_1_16: -1784537368504845837
+      SpritePersonaje_1_17: -7979308207696716036
+      SpritePersonaje_1_18: 799586181056105003
+      SpritePersonaje_1_19: 8086114908829171196
+      SpritePersonaje_1_2: 7581071690962494413
+      SpritePersonaje_1_20: -1445323595001482199
+      SpritePersonaje_1_21: -4282243193370449935
+      SpritePersonaje_1_22: 8390594059663046505
+      SpritePersonaje_1_23: 7686249121441870240
+      SpritePersonaje_1_24: 3393529475818211848
+      SpritePersonaje_1_25: 6417224273487737021
+      SpritePersonaje_1_26: 3745435557838723137
+      SpritePersonaje_1_27: 4990716858111452716
+      SpritePersonaje_1_28: 8800945501989409769
+      SpritePersonaje_1_29: 5340992722209578469
+      SpritePersonaje_1_3: -1866645682501672368
+      SpritePersonaje_1_30: 207881175638032369
+      SpritePersonaje_1_31: -2115236330979359517
+      SpritePersonaje_1_32: 2372047187891732704
+      SpritePersonaje_1_33: -6188695884279882353
+      SpritePersonaje_1_34: -4060482830792044172
+      SpritePersonaje_1_35: 1206311037336944101
+      SpritePersonaje_1_36: 22517208514235659
+      SpritePersonaje_1_37: -3483782313594156390
+      SpritePersonaje_1_38: 4490433865477628517
+      SpritePersonaje_1_39: -6831679986031135938
+      SpritePersonaje_1_4: 2107272318973339377
+      SpritePersonaje_1_40: 1333199833418377471
+      SpritePersonaje_1_41: -4401463546814249818
+      SpritePersonaje_1_42: 2111169813254550231
+      SpritePersonaje_1_43: -6373130474233581244
+      SpritePersonaje_1_44: -3479440375872898280
+      SpritePersonaje_1_45: 9035781976049630659
+      SpritePersonaje_1_46: 1444094408634305125
+      SpritePersonaje_1_47: 1382957378194392006
+      SpritePersonaje_1_48: 5255054827014201939
+      SpritePersonaje_1_49: -1984176307
+      SpritePersonaje_1_5: 6039811761776948493
+      SpritePersonaje_1_6: -8571335818085142090
+      SpritePersonaje_1_7: -4494980174090133288
+      SpritePersonaje_1_8: -3465434567430101665
+      SpritePersonaje_1_9: -1307041680108863110
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

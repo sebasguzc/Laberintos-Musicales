@@ -38,8 +38,21 @@ public class ProximityGemSynth : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("ProximityGemSynth inicializado correctamente");
+
         if (audioSource == null)
+        {
             audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("ProximityGemSynth: No hay AudioSource en este GameObject. Añade un componente AudioSource.");
+                return;
+            }
+            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
+        }
+
+        if (audioSource != null)
+            Debug.Log("AudioSource conectado correctamente");
 
         InitializeWavetables();
     }
@@ -117,7 +130,11 @@ public class ProximityGemSynth : MonoBehaviour
         // Normalize
         NormalizeAudio(samples);
 
-        return AudioClip.Create("ProximitySound", totalFrames, 1, sampleRate, false);
+        // ¡CORRECCIÓN CRUCIAL: Crear y volcar los datos al AudioClip para que suene!
+        AudioClip clip = AudioClip.Create("ProximitySound", totalFrames, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+
+        return clip;
     }
 
     private AudioClip GenerateApproachingSound(float duration)
@@ -157,7 +174,11 @@ public class ProximityGemSynth : MonoBehaviour
         // Normalize
         NormalizeAudio(samples);
 
-        return AudioClip.Create("ApproachingSound", totalFrames, 1, sampleRate, false);
+        // ¡CORRECCIÓN CRUCIAL: Crear y volcar los datos al AudioClip para que suene!
+        AudioClip clip = AudioClip.Create("ApproachingSound", totalFrames, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+
+        return clip;
     }
 
     private void AddSparkles(float[] samples, float duration, float fixedProximity, System.Random rng)
@@ -270,20 +291,23 @@ public class ProximityGemSynth : MonoBehaviour
         }
     }
 
-    // For testing in editor
+    // Controles por teclado de prueba (J, K, L) para no interferir con otros instrumentos
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            PlayProximitySound(0.15f); // Lejos
+            Debug.Log("Proximidad: Lejos (0.15)");
+            PlayProximitySound(0.15f); 
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.K))
         {
-            PlayProximitySound(0.9f); // Cerca
+            Debug.Log("Proximidad: Cerca (0.9)");
+            PlayProximitySound(0.9f); 
         }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            PlayApproachingSound(); // Acercándose
+            Debug.Log("Proximidad: Acercándose dinámicamente");
+            PlayApproachingSound(); 
         }
     }
 }

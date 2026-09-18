@@ -13,7 +13,7 @@ public class EnemyTensionSynth : MonoBehaviour
 
     [Header("Synthesis Parameters")]
     // [SerializeField] private float baseFrequency = 72.0f; // Reservado para uso futuro
-    [SerializeField] private float duration = 8.0f;
+    [SerializeField] private float duration = 8.0f; // ¡Ahora sí se usa!
     [SerializeField] private int tableSize = 1024;
     [SerializeField] private int wavetableSeed = 42;
 
@@ -27,7 +27,10 @@ public class EnemyTensionSynth : MonoBehaviour
     [SerializeField] private float lfoRateHz = 1.0f;
     [SerializeField] private float filterMinCutoff = 250.0f;
     [SerializeField] private float filterMaxCutoff = 900.0f;
-    // [SerializeField] [Range(0f, 1f)] private float tremoloDepth = 0.3f; // Reservado para uso futuro
+    [SerializeField] [Range(0f, 1f)] private float tremoloDepth = 0.3f;
+
+    [Header("LFO Mode")]
+    [SerializeField] private LFOMode lfoMode = LFOMode.Filter; // ¡Ahora sí se usa!
 
     public enum LFOMode
     {
@@ -35,9 +38,6 @@ public class EnemyTensionSynth : MonoBehaviour
         Tremolo,
         Both
     }
-
-    [Header("LFO Mode")]
-    [SerializeField] private LFOMode lfoMode = LFOMode.Filter;
 
     [Header("Wavetable Settings")]
     [SerializeField] private float pulseDuty = 0.35f;
@@ -47,8 +47,21 @@ public class EnemyTensionSynth : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("EnemyTensionSynth inicializado correctamente");
+
         if (audioSource == null)
+        {
             audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("EnemyTensionSynth: No hay AudioSource en este GameObject. Añade un componente AudioSource.");
+                return;
+            }
+            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
+        }
+
+        if (audioSource != null)
+            Debug.Log("AudioSource conectado correctamente");
 
         InitializeWavetable();
         lowPassFilter = new LowPassFilter(sampleRate, filterMinCutoff, filterMaxCutoff, lfoRateHz);
@@ -70,11 +83,11 @@ public class EnemyTensionSynth : MonoBehaviour
     }
 
     /// <summary>
-    /// Reproduce sonido de tensión del enemigo
+    /// Reproduce sonido de tensión del enemigo usando los parámetros del Inspector
     /// </summary>
     public void PlayTensionSound()
     {
-        AudioClip clip = GenerateEnemyTension();
+        AudioClip clip = GenerateEnemyTension(duration, 72.0f, lfoMode, tremoloDepth);
         audioSource.clip = clip;
         audioSource.volume = masterVolume;
         audioSource.Play();
@@ -89,32 +102,17 @@ public class EnemyTensionSynth : MonoBehaviour
         LFOMode customLFOMode = LFOMode.Filter,
         float customTremoloDepth = 0.3f)
     {
-        _customDuration = customDuration;
-        _customFrequency = customFrequency;
-        _customLFOMode = customLFOMode;
-        _customTremoloDepth = customTremoloDepth;
-        
-        return GenerateEnemyTensionInternal();
-    }
-
-    private float _customDuration = 8.0f;
-    private float _customFrequency = 72.0f;
-    private LFOMode _customLFOMode = LFOMode.Filter;
-    private float _customTremoloDepth = 0.3f;
-
-    private AudioClip GenerateEnemyTensionInternal()
-    {
-        int totalFrames = Mathf.CeilToInt(_customDuration * sampleRate);
+        int totalFrames = Mathf.CeilToInt(customDuration * sampleRate);
         float[] samples = new float[totalFrames];
 
         float phase = 0f;
-        float increment = _customFrequency * tableSize / sampleRate;
+        float increment = customFrequency * tableSize / sampleRate;
 
         // Reset filter state
         lowPassFilter.Reset();
 
-        bool useFilter = _customLFOMode == LFOMode.Filter || _customLFOMode == LFOMode.Both;
-        bool useTremolo = _customLFOMode == LFOMode.Tremolo || _customLFOMode == LFOMode.Both;
+        bool useFilter = customLFOMode == LFOMode.Filter || customLFOMode == LFOMode.Both;
+        bool useTremolo = customLFOMode == LFOMode.Tremolo || customLFOMode == LFOMode.Both;
 
         for (int i = 0; i < totalFrames; i++)
         {
@@ -125,13 +123,13 @@ public class EnemyTensionSynth : MonoBehaviour
                 phase -= tableSize;
 
             float raw = enemyWavetable[Mathf.FloorToInt(phase)];
-            float env = CalculateADSREnvelope(t, _customDuration);
+            float env = CalculateADSREnvelope(t, customDuration);
 
             float stage = useFilter ? lowPassFilter.ProcessSample(raw, t) : raw;
 
             if (useTremolo)
             {
-                float tremolo = (1f - _customTremoloDepth) + _customTremoloDepth * Mathf.Sin(2f * Mathf.PI * lfoRateHz * t);
+                float tremolo = (1f - customTremoloDepth) + customTremoloDepth * Mathf.Sin(2f * Mathf.PI * lfoRateHz * t);
                 stage *= tremolo;
             }
 
@@ -141,7 +139,11 @@ public class EnemyTensionSynth : MonoBehaviour
         // Normalize
         NormalizeAudio(samples);
 
-        return AudioClip.Create("EnemyTension", totalFrames, 1, sampleRate, false);
+        // Crear AudioClip y volcar datos para que suene
+        AudioClip clip = AudioClip.Create("EnemyTension", totalFrames, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+
+        return clip;
     }
 
     private float CalculateADSREnvelope(float t, float noteDuration)
@@ -219,21 +221,24 @@ public class EnemyTensionSynth : MonoBehaviour
         }
     }
 
-    // For testing in editor
+    // Controles por teclado (Z, X, C) para no interferir con la guitarra o el piano
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
+            Debug.Log("Tensión (Modo Filtro) activada");
             lfoMode = LFOMode.Filter;
             PlayTensionSound();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.X))
         {
+            Debug.Log("Tensión (Modo Tremolo) activada");
             lfoMode = LFOMode.Tremolo;
             PlayTensionSound();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.C))
         {
+            Debug.Log("Tensión (Modo Ambos) activada");
             lfoMode = LFOMode.Both;
             PlayTensionSound();
         }

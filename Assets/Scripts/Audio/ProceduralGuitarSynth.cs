@@ -54,8 +54,21 @@ public class ProceduralGuitarSynth : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("GuitarSynth inicializado correctamente");
+        
         if (audioSource == null)
+        {
             audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("No hay AudioSource en este GameObject. Añade un componente AudioSource.");
+                return;
+            }
+            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
+        }
+        
+        if (audioSource != null)
+            Debug.Log("AudioSource conectado correctamente");
 
         noiseRandom = new System.Random();
     }
@@ -88,7 +101,7 @@ public class ProceduralGuitarSynth : MonoBehaviour
     /// <summary>
     /// Genera un AudioClip con el sonido de guitarra especificado
     /// </summary>
-    public AudioClip GenerateGuitarSound(float frequency)
+public AudioClip GenerateGuitarSound(float frequency)
     {
         int totalSamples = Mathf.CeilToInt(noteDuration * sampleRate);
         float[] samples = new float[totalSamples];
@@ -123,7 +136,11 @@ public class ProceduralGuitarSynth : MonoBehaviour
         // 4. Normalización anti-clipping
         NormalizeAudio(samples);
 
-        return AudioClip.Create("Guitar_" + frequency + "Hz", totalSamples, 1, sampleRate, false);
+        // 5. CREAR EL CLIP Y VOLCAR LOS DATOS DE LAS MUESTRAS (¡ESTO ES LO QUE HARÁ QUE SUENE!)
+        AudioClip clip = AudioClip.Create("Guitar_" + frequency + "Hz", totalSamples, 1, sampleRate, false);
+        clip.SetData(samples, 0); // <--- ¡Añade esta línea obligatoriamente!
+
+        return clip;
     }
 
     private float GetNoteFrequency(GuitarNote note, float customFrequency)
@@ -245,8 +262,14 @@ public class ProceduralGuitarSynth : MonoBehaviour
     // For testing in editor
     private void Update()
     {
+        if (Input.anyKeyDown)
+        {
+            Debug.Log("¡Se presionó una tecla!");
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            Debug.Log("Tecla 1 presionada, reproduciendo DO");
             PlayNote(GuitarNote.Do);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
