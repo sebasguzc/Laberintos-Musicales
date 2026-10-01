@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 3294603686274977003}
   - component: {fileID: 7411179914404929927}
   - component: {fileID: 6884389216311813898}
+  - component: {fileID: 146076417567408262}
   m_Layer: 0
   m_Name: TercerPersonaje2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -195,3 +196,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0050000036, y: 0.11499993}
   m_Size: {x: 0.17000002, y: 0.17000002}
   m_Direction: 0
+--- !u!114 &146076417567408262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8618702620860759967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9ae4200b54971a4db84061a7df94bec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 100
+  currentHealth: 0
