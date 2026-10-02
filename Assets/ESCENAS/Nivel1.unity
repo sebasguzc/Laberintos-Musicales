@@ -392,6 +392,50 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &14284309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 14284311}
+  - component: {fileID: 14284310}
+  m_Layer: 0
+  m_Name: MusicStoper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &14284310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14284309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97320a23f1c124c97f74752d1b6516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StopAmbientMusic
+--- !u!4 &14284311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14284309}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 351.85507, y: 64.62026, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &20420041
 GameObject:
   m_ObjectHideFlags: 0
@@ -17983,7 +18027,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1392823320}
   - component: {fileID: 1392823319}
-  - component: {fileID: 1392823318}
+  - component: {fileID: 1392823321}
   m_Layer: 0
   m_Name: AmbientMusicManager
   m_TagString: Untagged
@@ -17991,23 +18035,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1392823318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1392823317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14b1a8b115523c4479d309e7536b63e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AmbientMusicManager
-  audioSource: {fileID: 1392823319}
-  ambientVolume: 0.1
-  musicTracks:
-  - {fileID: 8300000, guid: 7b85e39dd22ca8c478f629f5d8d14da9, type: 3}
-  - {fileID: 8300000, guid: 7d030f72e942a164baa90a38d0a55691, type: 3}
 --- !u!82 &1392823319
 AudioSource:
   m_ObjectHideFlags: 0
@@ -18120,6 +18147,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1392823321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392823317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63b4dd3458e87cf4caaf4dec549dec2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelMusicManager
+  audioSource: {fileID: 0}
+  levelVolume: 0.3
+  levelTracks:
+  - {fileID: 8300000, guid: b01a13c739cd5b041b2e931c5ad17c9f, type: 3}
+  - {fileID: 8300000, guid: 6286a74fb46fe924dacde391141f6fb7, type: 3}
 --- !u!1 &1394236253
 GameObject:
   m_ObjectHideFlags: 0
@@ -33597,3 +33641,4 @@ SceneRoots:
   - {fileID: 777507861}
   - {fileID: 1191145115}
   - {fileID: 88443509}
+  - {fileID: 14284311}
