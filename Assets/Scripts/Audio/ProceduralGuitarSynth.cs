@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Procedural Guitar Synthesizer - Sintetizador aditivo de guitarra acústica
-/// Genera sonidos de guitarra pulsada con ataque rápido, decaimiento progresivo y resonancia cálida
+/// Sintetizador aditivo de guitarra acústica.
+/// Ya NO escucha el teclado: quien decide cuándo sonar es MelodyLevelManager.
 /// </summary>
 public class ProceduralGuitarSynth : MonoBehaviour
 {
@@ -11,23 +12,10 @@ public class ProceduralGuitarSynth : MonoBehaviour
     [SerializeField] private int sampleRate = 44100;
     [SerializeField] private float masterVolume = 0.8f;
 
-    public enum GuitarNote
-    {
-        Do,
-        Re,
-        Mi,
-        Fa,
-        Sol,
-        Custom
-    }
-
-    [Header("Note Settings")]
-    // [SerializeField] private GuitarNote currentNote = GuitarNote.Do; // Reservado para uso futuro
-
     [Header("ADSR Envelope")]
     [SerializeField] private float attack = 0.005f;
     [SerializeField] private float decay = 0.25f;
-    [SerializeField] [Range(0f, 1f)] private float sustain = 0.30f;
+    [SerializeField, Range(0f, 1f)] private float sustain = 0.30f;
     [SerializeField] private float release = 0.80f;
 
     [Header("Pick Noise Settings")]
@@ -35,180 +23,133 @@ public class ProceduralGuitarSynth : MonoBehaviour
 
     [Header("Harmonics - Guitar Acoustic Characteristics")]
     [SerializeField]
-    private float[] harmonicAmplitudes = new float[]
+    private float[] harmonicAmplitudes =
     {
-        1.00f,  // Fundamental
-        0.62f,  // 2nd harmonic
-        0.45f,  // 3rd harmonic
-        0.30f,  // 4th harmonic
-        0.20f,  // 5th harmonic
-        0.12f,  // 6th harmonic
-        0.08f,  // 7th harmonic
-        0.05f   // 8th harmonic
+        1.00f, // Fundamental
+        0.62f, // 2º armónico
+        0.45f, // 3º
+        0.30f, // 4º
+        0.20f, // 5º
+        0.12f, // 6º
+        0.08f, // 7º
+        0.05f  // 8º
     };
 
     [Header("Note Duration")]
     [SerializeField] private float noteDuration = 2.5f;
 
     private System.Random noiseRandom;
+    private readonly Dictionary<NoteName, AudioClip> clipCache = new Dictionary<NoteName, AudioClip>();
 
-    void Start()
+    private void Awake()
     {
-        Debug.Log("GuitarSynth inicializado correctamente");
-        
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                Debug.LogError("No hay AudioSource en este GameObject. Añade un componente AudioSource.");
-                return;
-            }
-            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
-        }
-        
-        if (audioSource != null)
-            Debug.Log("AudioSource conectado correctamente");
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // sonido 2D: se oye igual en todo el mapa
 
         noiseRandom = new System.Random();
+        PreGenerateClips();
     }
 
-    /// <summary>
-    /// Reproduce una nota específica de guitarra
-    /// </summary>
-    public void PlayNote(GuitarNote note, float customFrequency = 261.63f)
+    [ContextMenu("Regenerar clips")]
+    public void PreGenerateClips()
     {
-        float frequency = GetNoteFrequency(note, customFrequency);
-        AudioClip clip = GenerateGuitarSound(frequency);
+        if (noiseRandom == null) noiseRandom = new System.Random();
+
+        clipCache.Clear();
+        foreach (NoteName note in System.Enum.GetValues(typeof(NoteName)))
+        {
+            clipCache[note] = GenerateGuitarSound(NoteUtils.GetFrequency(note));
+        }
+    }
+
+    /// <summary>Reproduce una de las notas del juego.</summary>
+    public void PlayNote(NoteName note)
+    {
+        if (!clipCache.TryGetValue(note, out AudioClip clip))
+        {
+            clip = GenerateGuitarSound(NoteUtils.GetFrequency(note));
+            clipCache[note] = clip;
+        }
+
+        PlayClip(clip);
+    }
+
+    /// <summary>Reproduce una frecuencia libre (no se guarda en caché).</summary>
+    public void PlayFrequency(float frequency)
+    {
+        PlayClip(GenerateGuitarSound(frequency));
+    }
+
+    private void PlayClip(AudioClip clip)
+    {
+        audioSource.Stop();
         audioSource.clip = clip;
         audioSource.volume = masterVolume;
         audioSource.Play();
     }
 
-    /// <summary>
-    /// Reproduce una nota específica por nombre
-    /// </summary>
-    public void PlayNoteByName(string noteName)
-    {
-        GuitarNote note = ParseNoteName(noteName);
-        float frequency = GetNoteFrequency(note, 261.63f);
-        AudioClip clip = GenerateGuitarSound(frequency);
-        audioSource.clip = clip;
-        audioSource.volume = masterVolume;
-        audioSource.Play();
-    }
-
-    /// <summary>
-    /// Genera un AudioClip con el sonido de guitarra especificado
-    /// </summary>
-public AudioClip GenerateGuitarSound(float frequency)
+    /// <summary>Genera un AudioClip con el sonido de guitarra para la frecuencia dada.</summary>
+    public AudioClip GenerateGuitarSound(float frequency)
     {
         int totalSamples = Mathf.CeilToInt(noteDuration * sampleRate);
         float[] samples = new float[totalSamples];
 
-        // 1. Síntesis aditiva (armónicos)
         for (int i = 0; i < totalSamples; i++)
         {
             float t = (float)i / sampleRate;
             float sample = 0f;
 
-            // Suma de armónicos
+            // 1. Síntesis aditiva (armónicos)
             for (int h = 0; h < harmonicAmplitudes.Length; h++)
             {
-                int harmonicNumber = h + 1;
-                float harmonicFreq = frequency * harmonicNumber;
-                float harmonicAmp = harmonicAmplitudes[h];
-                sample += harmonicAmp * Mathf.Sin(2f * Mathf.PI * harmonicFreq * t);
+                float harmonicFreq = frequency * (h + 1);
+                sample += harmonicAmplitudes[h] * Mathf.Sin(2f * Mathf.PI * harmonicFreq * t);
             }
 
-            // 2. Ruido del rasgueo / ataque de la uñeta (Pick noise)
+            // 2. Ruido de la uñeta al atacar la cuerda
             float pickNoise = Mathf.Exp(-25f * t);
-            float noise = (float)(noiseRandom.NextDouble() * 2f - 1f) * noiseIntensity * pickNoise;
+            float noise = (float)(noiseRandom.NextDouble() * 2.0 - 1.0) * noiseIntensity * pickNoise;
             sample += noise;
 
-            // 3. Aplicación de la envolvente ADSR
-            float envelope = CalculateADSREnvelope(t, noteDuration);
-            sample *= envelope;
+            // 3. Envolvente ADSR
+            sample *= CalculateADSREnvelope(t, noteDuration);
 
             samples[i] = sample;
         }
 
-        // 4. Normalización anti-clipping
+        // 4. Anti-clipping
         NormalizeAudio(samples);
 
-        // 5. CREAR EL CLIP Y VOLCAR LOS DATOS DE LAS MUESTRAS (¡ESTO ES LO QUE HARÁ QUE SUENE!)
+        // 5. Crear el clip y volcar las muestras
         AudioClip clip = AudioClip.Create("Guitar_" + frequency + "Hz", totalSamples, 1, sampleRate, false);
-        clip.SetData(samples, 0); // <--- ¡Añade esta línea obligatoriamente!
-
+        clip.SetData(samples, 0);
         return clip;
     }
 
-    private float GetNoteFrequency(GuitarNote note, float customFrequency)
+    private float CalculateADSREnvelope(float t, float duration)
     {
-        switch (note)
-        {
-            case GuitarNote.Do:
-                return 261.63f;  // C4
-            case GuitarNote.Re:
-                return 293.66f;  // D4
-            case GuitarNote.Mi:
-                return 329.63f;  // E4
-            case GuitarNote.Fa:
-                return 349.23f;  // F4
-            case GuitarNote.Sol:
-                return 392.00f;  // G4
-            case GuitarNote.Custom:
-                return customFrequency;
-            default:
-                return 261.63f;
-        }
-    }
-
-    private GuitarNote ParseNoteName(string noteName)
-    {
-        switch (noteName.ToLower())
-        {
-            case "do":
-            case "c":
-                return GuitarNote.Do;
-            case "re":
-            case "d":
-                return GuitarNote.Re;
-            case "mi":
-            case "e":
-                return GuitarNote.Mi;
-            case "fa":
-            case "f":
-                return GuitarNote.Fa;
-            case "sol":
-            case "g":
-                return GuitarNote.Sol;
-            default:
-                return GuitarNote.Do;
-        }
-    }
-
-    private float CalculateADSREnvelope(float t, float noteDuration)
-    {
-        // 1. Attack
+        // Attack
         if (t < attack)
             return t / Mathf.Max(attack, 0.0001f);
 
-        // 2. Decay
+        // Decay
         if (t < attack + decay)
         {
             float d = (t - attack) / Mathf.Max(decay, 0.0001f);
             return (1f - d) + d * sustain;
         }
 
-        // 3. Sustain
+        // Sustain
         float sustainStart = attack + decay;
-        float sustainEnd = Mathf.Max(sustainStart, noteDuration - release);
+        float sustainEnd = Mathf.Max(sustainStart, duration - release);
         if (t < sustainEnd)
             return sustain;
 
-        // 4. Release
-        if (t <= noteDuration)
+        // Release
+        if (t <= duration)
         {
             float r = (t - sustainEnd) / Mathf.Max(release, 0.0001f);
             return sustain * (1f - r);
@@ -220,73 +161,34 @@ public AudioClip GenerateGuitarSound(float frequency)
     private void NormalizeAudio(float[] samples)
     {
         float peak = 0f;
-        foreach (float sample in samples)
-        {
-            peak = Mathf.Max(peak, Mathf.Abs(sample));
-        }
+        foreach (float s in samples)
+            peak = Mathf.Max(peak, Mathf.Abs(s));
 
         if (peak > 1f)
         {
             for (int i = 0; i < samples.Length; i++)
-            {
                 samples[i] /= peak;
-            }
         }
     }
 
-    /// <summary>
-    /// Configura los parámetros de la envolvente ADSR
-    /// </summary>
+    /// <summary>Cambia la envolvente y regenera los clips.</summary>
     public void SetADSR(float newAttack, float newDecay, float newSustain, float newRelease)
     {
         attack = newAttack;
         decay = newDecay;
         sustain = newSustain;
         release = newRelease;
+        PreGenerateClips();
     }
 
-    /// <summary>
-    /// Configura los armónicos para diferentes timbres de guitarra
-    /// </summary>
+    /// <summary>Cambia los armónicos (mismo largo que el arreglo actual) y regenera los clips.</summary>
     public void SetHarmonics(float[] newHarmonics)
     {
-        if (newHarmonics != null && newHarmonics.Length == harmonicAmplitudes.Length)
-        {
-            for (int i = 0; i < harmonicAmplitudes.Length; i++)
-            {
-                harmonicAmplitudes[i] = newHarmonics[i];
-            }
-        }
-    }
+        if (newHarmonics == null || newHarmonics.Length != harmonicAmplitudes.Length) return;
 
-    // For testing in editor
-    private void Update()
-    {
-        if (Input.anyKeyDown)
-        {
-            Debug.Log("¡Se presionó una tecla!");
-        }
+        for (int i = 0; i < harmonicAmplitudes.Length; i++)
+            harmonicAmplitudes[i] = newHarmonics[i];
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Debug.Log("Tecla 1 presionada, reproduciendo DO");
-            PlayNote(GuitarNote.Do);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            PlayNote(GuitarNote.Re);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            PlayNote(GuitarNote.Mi);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            PlayNote(GuitarNote.Fa);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            PlayNote(GuitarNote.Sol);
-        }
+        PreGenerateClips();
     }
 }
