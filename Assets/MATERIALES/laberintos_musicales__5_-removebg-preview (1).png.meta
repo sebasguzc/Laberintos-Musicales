@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c10114236c6b57545b61a1ebf41634c8
+guid: e4b6a109def9af14d8cdf7c8c3cd704f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6159371633847262667
-    second: laberintos_musicales-removebg-preview (3)_0
+      213: 885356771199606465
+    second: laberintos_musicales__5_-removebg-preview (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: laberintos_musicales-removebg-preview (3)_0
+      name: laberintos_musicales__5_-removebg-preview (1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bcd55130edb7a7550800000000000000
-      internalID: 6159371633847262667
+      spriteID: 1ced6d6ea4b694c00800000000000000
+      internalID: 885356771199606465
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      laberintos_musicales-removebg-preview (3)_0: 6159371633847262667
+      laberintos_musicales__5_-removebg-preview (1)_0: 885356771199606465
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
