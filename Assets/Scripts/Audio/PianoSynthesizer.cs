@@ -1,330 +1,129 @@
+using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Sintetizador aditivo de piano.
+/// Ya NO escucha el teclado: quien decide cuándo sonar es MelodyLevelManager.
+/// </summary>
 public class PianoSynthesizer : MonoBehaviour
 {
-    // =========================================================
-    // CONFIGURACIÓN GENERAL
-    // =========================================================
-
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
-
     [SerializeField] private int sampleRate = 44100;
-
     [SerializeField] private float noteDuration = 2.0f;
-
     [SerializeField] private float masterVolume = 0.8f;
 
-
-    // =========================================================
-    // ADSR
-    // =========================================================
-
     [Header("ADSR")]
-
     [SerializeField] private float attack = 0.01f;
-
     [SerializeField] private float decay = 0.30f;
-
     [Range(0f, 1f)]
     [SerializeField] private float sustain = 0.20f;
-
     [SerializeField] private float release = 0.50f;
 
-
-    // =========================================================
-    // ARMÓNICOS
-    // =========================================================
-
     [Header("Armónicos del Piano")]
-
     [SerializeField]
     private float[] harmonicAmplitudes =
     {
-        1.00f,
-        0.55f,
-        0.35f,
-        0.20f,
-        0.12f,
-        0.08f,
-        0.05f,
-        0.03f
+        1.00f, 0.55f, 0.35f, 0.20f, 0.12f, 0.08f, 0.05f, 0.03f
     };
 
+    // Se generan una sola vez para no calcular miles de senos cada vez que suena una nota
+    private readonly Dictionary<NoteName, AudioClip> clipCache = new Dictionary<NoteName, AudioClip>();
 
-    // =========================================================
-    // NOTAS
-    // =========================================================
-
-    public enum Note
+    private void Awake()
     {
-        Do,
-        Re,
-        Mi,
-        Fa,
-        Sol
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // sonido 2D: se oye igual en todo el mapa
+
+        PreGenerateClips();
     }
 
-    void Start()
+    [ContextMenu("Regenerar clips")]
+    public void PreGenerateClips()
     {
-        Debug.Log("PianoSynthesizer inicializado correctamente");
-
-        if (audioSource == null)
+        clipCache.Clear();
+        foreach (NoteName note in System.Enum.GetValues(typeof(NoteName)))
         {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                Debug.LogError("PianoSynthesizer: No hay AudioSource en este GameObject. Añade un componente AudioSource.");
-                return;
-            }
-            Debug.Log("AudioSource encontrado automáticamente con GetComponent");
+            clipCache[note] = GeneratePianoNote(note.ToString(), NoteUtils.GetFrequency(note));
+        }
+    }
+
+    public void PlayNote(NoteName note)
+    {
+        if (!clipCache.TryGetValue(note, out AudioClip clip))
+        {
+            clip = GeneratePianoNote(note.ToString(), NoteUtils.GetFrequency(note));
+            clipCache[note] = clip;
         }
 
-        if (audioSource != null)
-            Debug.Log("AudioSource conectado correctamente");
-    }
-
-
-    // =========================================================
-    // FRECUENCIAS
-    // =========================================================
-
-    private float GetFrequency(Note note)
-    {
-        switch (note)
-        {
-            case Note.Do:
-                return 261.63f;
-
-            case Note.Re:
-                return 293.66f;
-
-            case Note.Mi:
-                return 329.63f;
-
-            case Note.Fa:
-                return 349.23f;
-
-            case Note.Sol:
-                return 392.00f;
-        }
-
-        return 261.63f;
-    }
-
-
-    // =========================================================
-    // REPRODUCIR NOTA
-    // =========================================================
-
-    public void PlayNote(Note note)
-    {
-        float frequency = GetFrequency(note);
-
-        AudioClip clip = GeneratePianoNote(
-            note.ToString(),
-            frequency
-        );
-
+        audioSource.Stop();
         audioSource.clip = clip;
         audioSource.volume = masterVolume;
-
         audioSource.Play();
     }
 
-
-    // =========================================================
-    // GENERACIÓN DEL PIANO
-    // =========================================================
-
-    private AudioClip GeneratePianoNote(
-        string noteName,
-        float fundamentalFrequency)
+    private AudioClip GeneratePianoNote(string noteName, float fundamentalFrequency)
     {
-        int sampleCount =
-            Mathf.CeilToInt(noteDuration * sampleRate);
-
+        int sampleCount = Mathf.CeilToInt(noteDuration * sampleRate);
         float[] samples = new float[sampleCount];
-
-
-        // -----------------------------------------------------
-        // GENERACIÓN DE LAS MUESTRAS
-        // -----------------------------------------------------
+        float amplitudeSum = CalculateAmplitudeSum();
 
         for (int i = 0; i < sampleCount; i++)
         {
             float time = (float)i / sampleRate;
-
             float sample = 0f;
 
-
-            // -------------------------------------------------
-            // SÍNTESIS ADITIVA
-            // -------------------------------------------------
-
-            for (int h = 0;
-                 h < harmonicAmplitudes.Length;
-                 h++)
+            // Síntesis aditiva
+            for (int h = 0; h < harmonicAmplitudes.Length; h++)
             {
-                int harmonicNumber = h + 1;
-
-                float harmonicFrequency =
-                    fundamentalFrequency * harmonicNumber;
-
-                float harmonicAmplitude =
-                    harmonicAmplitudes[h];
-
-
-                sample +=
-                    harmonicAmplitude *
-                    Mathf.Sin(
-                        2f *
-                        Mathf.PI *
-                        harmonicFrequency *
-                        time
-                    );
+                float harmonicFrequency = fundamentalFrequency * (h + 1);
+                sample += harmonicAmplitudes[h] * Mathf.Sin(2f * Mathf.PI * harmonicFrequency * time);
             }
 
-
-            // -------------------------------------------------
-            // NORMALIZACIÓN
-            // -------------------------------------------------
-
-            sample /= CalculateAmplitudeSum();
-
-
-            // -------------------------------------------------
-            // ADSR
-            // -------------------------------------------------
-
-            float envelope =
-                GetADSR(time, noteDuration);
-
-            sample *= envelope;
-
-
-            // -------------------------------------------------
-            // GUARDAR MUESTRA
-            // -------------------------------------------------
+            // Normalización + ADSR
+            sample /= amplitudeSum;
+            sample *= GetADSR(time, noteDuration);
 
             samples[i] = sample;
         }
 
-
-        // =====================================================
-        // CREAR AUDIOCLIP
-        // =====================================================
-
-        AudioClip clip =
-            AudioClip.Create(
-                "Piano_" + noteName,
-                sampleCount,
-                1,
-                sampleRate,
-                false
-            );
-
-        // Volcado obligatorio de los datos para que suene
+        AudioClip clip = AudioClip.Create("Piano_" + noteName, sampleCount, 1, sampleRate, false);
         clip.SetData(samples, 0);
-
         return clip;
     }
 
-
-    // =========================================================
-    // ADSR
-    // =========================================================
-
-    private float GetADSR(
-        float time,
-        float duration)
+    private float GetADSR(float time, float duration)
     {
-        // -----------------------------------------------------
-        // ATTACK
-        // -----------------------------------------------------
-
+        // Attack
         if (time < attack)
-        {
-            return time / attack;
-        }
+            return time / Mathf.Max(attack, 0.0001f);
 
-
-        // -----------------------------------------------------
-        // DECAY
-        // -----------------------------------------------------
-
+        // Decay
         if (time < attack + decay)
         {
-            float decayTime =
-                (time - attack) / decay;
-
-            return Mathf.Lerp(
-                1f,
-                sustain,
-                decayTime
-            );
+            float decayTime = (time - attack) / Mathf.Max(decay, 0.0001f);
+            return Mathf.Lerp(1f, sustain, decayTime);
         }
 
-
-        // -----------------------------------------------------
-        // SUSTAIN
-        // -----------------------------------------------------
-
-        float releaseStart =
-            duration - release;
-
+        // Sustain
+        float releaseStart = duration - release;
         if (time < releaseStart)
-        {
             return sustain;
-        }
 
-
-        // -----------------------------------------------------
-        // RELEASE
-        // -----------------------------------------------------
-
-        float releaseTime =
-            (time - releaseStart) / release;
-
-        return Mathf.Lerp(
-            sustain,
-            0f,
-            releaseTime
-        );
+        // Release
+        float releaseTime = (time - releaseStart) / Mathf.Max(release, 0.0001f);
+        return Mathf.Lerp(sustain, 0f, releaseTime);
     }
-
-
-    // =========================================================
-    // SUMA DE AMPLITUDES
-    // =========================================================
 
     private float CalculateAmplitudeSum()
     {
         float sum = 0f;
-
-        for (int i = 0;
-             i < harmonicAmplitudes.Length;
-             i++)
-        {
-            sum += Mathf.Abs(
-                harmonicAmplitudes[i]
-            );
-        }
+        for (int i = 0; i < harmonicAmplitudes.Length; i++)
+            sum += Mathf.Abs(harmonicAmplitudes[i]);
 
         return Mathf.Max(sum, 0.001f);
-    }
-
-
-    // =========================================================
-    // PRUEBAS CON TECLADO
-    // =========================================================
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q)) PlayNote(Note.Do);
-        if (Input.GetKeyDown(KeyCode.W)) PlayNote(Note.Re);
-        if (Input.GetKeyDown(KeyCode.E)) PlayNote(Note.Mi);
-        if (Input.GetKeyDown(KeyCode.R)) PlayNote(Note.Fa);
-        if (Input.GetKeyDown(KeyCode.T)) PlayNote(Note.Sol);
     }
 }

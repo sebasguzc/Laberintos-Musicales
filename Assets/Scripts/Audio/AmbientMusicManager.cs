@@ -1,53 +1,71 @@
 using UnityEngine;
 
 /// <summary>
-/// Ambient Music Manager - Administrador de música de ambiente procedural/aleatoria
-/// Selecciona aleatoriamente una de las pistas al iniciar, la reproduce en bucle 
-/// a un volumen bajo para no opacar los efectos de sonido del juego.
+/// Ambient Music Manager (Persistente)
+/// Elige una canciÃ³n al azar al iniciar la primera escena y sobrevive a los cambios de escena 
+/// sin reiniciarse ni cortarse.
 /// </summary>
 public class AmbientMusicManager : MonoBehaviour
 {
+    // Instancia estÃ¡tica para asegurar que solo exista un reproductor en todo el juego
+    private static AmbientMusicManager instance;
+
     [Header("Audio Settings")]
     [SerializeField] private AudioSource audioSource;
-    [Range(0f, 1f)]
-    [SerializeField] private float ambientVolume = 0.3f; // Volumen bajo por defecto para ambiente
+    [Range(0f, 1f)] 
+    [SerializeField] private float ambientVolume = 0.3f;
 
     [Header("Ambient Tracks")]
-    [SerializeField] private AudioClip[] musicTracks; // Aquí arrastrarás tus 2 canciones en el Inspector
+    [SerializeField] private AudioClip[] musicTracks; // Tus canciones de ambiente
+
+    void Awake()
+    {
+        // PatrÃ³n Singleton para mantener el objeto vivo entre escenas
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // Â¡Esto hace que NO se destruya al cambiar de escena!
+        }
+        else
+        {
+            // Si ya existe un manager en la escena anterior, destruimos este duplicado para evitar eco o conflictos
+            Destroy(gameObject);
+            return;
+        }
+    }
 
     void Start()
     {
-        // 1. Configurar o encontrar el AudioSource
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
-                Debug.Log("AmbientMusicManager: Se añadió un componente AudioSource automáticamente.");
             }
         }
 
-        // 2. Configurar propiedades del AudioSource para música de fondo
-        audioSource.loop = true;          // Para que se repita en bucle infinito
-        audioSource.playOnAwake = false;  // Lo controlaremos por código para elegir al azar
+        audioSource.loop = true;
+        audioSource.playOnAwake = false;
 
-        // 3. Reproducir música aleatoria si hay pistas asignadas
-        PlayRandomAmbientTrack();
+        // Si la mÃºsica aÃºn no estÃ¡ sonando (es la primera vez que se inicia), elegimos una pista al azar
+        if (!audioSource.isPlaying)
+        {
+            PlayRandomAmbientTrack();
+        }
     }
 
     /// <summary>
-    /// Selecciona y reproduce una pista al azar del arreglo de canciones
+    /// Selecciona y reproduce una pista al azar
     /// </summary>
     public void PlayRandomAmbientTrack()
     {
         if (musicTracks == null || musicTracks.Length == 0)
         {
-            Debug.LogWarning("AmbientMusicManager: No hay pistas de música asignadas en el Inspector.");
+            Debug.LogWarning("AmbientMusicManager: No hay pistas de mÃºsica asignadas.");
             return;
         }
 
-        // Elegir un índice al azar entre 0 y el número de canciones disponibles
         int randomIndex = Random.Range(0, musicTracks.Length);
         AudioClip selectedTrack = musicTracks[randomIndex];
 
@@ -56,24 +74,7 @@ public class AmbientMusicManager : MonoBehaviour
             audioSource.clip = selectedTrack;
             audioSource.volume = ambientVolume;
             audioSource.Play();
-
-            Debug.Log("Reproduciendo música ambiental aleatoria: " + selectedTrack.name);
-        }
-        else
-        {
-            Debug.LogError("AmbientMusicManager: La pista seleccionada al azar es nula (vacia).");
-        }
-    }
-
-    /// <summary>
-    /// Permite cambiar el volumen ambiental dinámicamente desde otro script si lo necesitas
-    /// </summary>
-    public void SetAmbientVolume(float newVolume)
-    {
-        ambientVolume = Mathf.Clamp01(newVolume);
-        if (audioSource != null)
-        {
-            audioSource.volume = ambientVolume;
+            Debug.Log("MÃºsica ambiental persistente sonando: " + selectedTrack.name);
         }
     }
 }
